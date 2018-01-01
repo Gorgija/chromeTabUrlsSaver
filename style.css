@@ -1,6 +1,7 @@
 body {
     background: black;
     color: green;
+    min-width: 800px;
 }
 
 .taburls {
