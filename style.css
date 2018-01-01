@@ -1,0 +1,23 @@
+body {
+    background: black;
+    color: green;
+}
+
+#taburls {
+    border: 1px solid green;
+    background: black;
+    color: green;
+    font-size: medium;
+    font-weight: bold;
+    font-family: monospace;
+    margin: 5px;
+    min-width: 200px;
+}
+
+#search {
+    width: 100%;
+    background: black;
+    color: green;
+    margin-bottom: 10px;
+    border: 1px solid;
+}

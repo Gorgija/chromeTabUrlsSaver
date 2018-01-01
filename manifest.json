@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+    "name": "In Chrome Extension App",
+    "version": "0.1",
+    "browser_action": {
+        "default_popup": "inchrome.html",
+        "default_icon": "inchrome.png"
+    },
+    "permissions": [
+        "tabs",
+        "storage",
+        "http://*/",
+        "https://*/"
+    ],
+    
+    "content_security_policy": "script-src 'self' https://www.gstatic.com/firebasejs/4.8.1/firebase.js; object-src 'self'"
+}
