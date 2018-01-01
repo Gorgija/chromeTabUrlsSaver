@@ -3,7 +3,7 @@ body {
     color: green;
 }
 
-#taburls {
+.taburls {
     border: 1px solid green;
     background: black;
     color: green;

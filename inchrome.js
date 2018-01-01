@@ -57,13 +57,13 @@ search.addEventListener("keydown", key => {
             result.items.forEach(item => {
                 results.style.minWidth = '700px';
                 let li$ = document.createElement("li");
-                li$.className = "list-group-item";
+                li$.className = "list-group-item row";
                 let img$ = document.createElement("img");
                 img$.src = item.snippet.thumbnails.default.url;
                 img$.className = "col-sm-4 col-md-4 col-lg-4 pull-left";
                 li$.appendChild(img$);
                 let divText$ = document.createElement("div");
-                divText$.className = "col-sm-12 col-md-12 col-lg-12";
+                divText$.className = "col-sm-8 col-md-8 col-lg-8";
                 let header$ = document.createElement("h6");
                 header$.textContent = item.snippet.title;
                 header$.className = "col-sm-12 col-md-12 col-lg-12";
@@ -71,7 +71,7 @@ search.addEventListener("keydown", key => {
                 header$.style.marginTop = "10px";
                 divText$.appendChild(header$);
                 let a$ = document.createElement("a");
-                a$.href = "www.youtube.com/watch?v=" + item.snippet.channelId;
+                a$.href = "www.youtube.com/watch?v=" + item.id.videoId;
                 a$.textContent = item.snippet.description
                 a$.className = "col-sm-12 col-md-12 col-lg-12";
                 a$.style.color = "green";
