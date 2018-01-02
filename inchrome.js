@@ -133,9 +133,16 @@ function setResultsList(item) {
 
         let btnCheckUrls$ = document.createElement("button");
         btnCheckUrls$.textContent = "Check";
-        btnCheckUrls$.className = "taburls";
+        btnCheckUrls$.className = "taburls " + item;
         btnCheckUrls$.addEventListener("click", evt => {
-            console.log(evt);
+            let timestamp = evt.srcElement.className.split(" ")[1];
+            db.ref("urls/"+timestamp).once("value",snapshot => {
+                let data = snapshot.val();
+                results.textContent = '';
+                data.forEach(value => {
+                    setResultsList(value);
+                });
+            });
         });
 
         let divText$ = document.createElement("div");
@@ -158,7 +165,6 @@ checkurls.addEventListener("click", (evt) => {
     db.ref("urls").once("value").then( (snapshot) => {
         let data = snapshot.val();
         Object.keys(data).forEach(key => {
-            console.log(`Date: ${new Date(parseInt(key))} | URLS: ${data[key]}`);
             setResultsList(key);
         })
     })
