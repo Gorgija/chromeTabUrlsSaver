@@ -2,17 +2,14 @@
 var yc = {
     key: "AIzaSyDy3fLPh8t6v5cdQM8WFY4WNXaTec5X4j0",  //"AIzaSyAMkHWnLNAvpKte-XA9nh3RheX7lFn_dNM",
     url: "https://content.googleapis.com/youtube/v3/search",
-    latitude:"",
+    latitude: "",
     longitude: "",
-    location: "" , //"21.5922529%2C-158.1147114",
+    location: "", //"21.5922529%2C-158.1147114",
     type: "video",
-    q: "" , // "funny",
-    radius: "" , // "10mi",
+    q: "", // "funny",
+    radius: "", // "10mi",
     part: "snippet" //"snippet" //contentDetails,,statistics,status
 }
-
-
-
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyBI0OtM8eBZA0jn2Nq0DJWJ20VWGuo-ATo",
@@ -21,64 +18,148 @@ var config = {
     projectId: "incrome-1377",
     storageBucket: "incrome-1377.appspot.com",
     messagingSenderId: "616898564325"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
+var resultData = {}
+const db = firebase.database();
 
-taburls.addEventListener("click",  (val) => {
-    // console.log(chrome.tabs);
+
+taburls.addEventListener("click", (key) => {
+    results.textContent = "";
     chrome.tabs.getAllInWindow((val) => {
-        var db = firebase.database();
-        var now = new Date().getTime();
-        db.ref("urls").child(now).set(val);
-        val.forEach(element => {
-           console.log(element);
-           let li$ = document.createElement("li");
-           li$.className = "list-group-item";
-           li$.className += " navbar-inverse";
-           li$.textContent = element.url;
-           results.appendChild(li$);
+        val.forEach(item => {
+            setResultsList(item);
         });
+        save.hidden = false;
+        resultData = val;
     })
 });
 
 search.addEventListener("keydown", key => {
-    if(key.keyCode===13) {
+    save.hidden = true;
+    if (key.keyCode === 13) {
         results.textContent = "";
         yc.q = search.value;
-        
         //var all = `${yc.url}?type=${yc.type}&q=${yc.q}&locationRadius=${yc.radius}&location=${yc.location}&part=${yc.part}&key=${yc.key}`
         let all = `${yc.url}?type=${yc.type}&q=${yc.q}&part=${yc.part}&key=${yc.key}`
         fetch(all)
-        .then(data => {
-            return data.json();
-        })
-        .then(result => {
-            console.log(result)
-            result.items.forEach(item => {
-                results.style.minWidth = '700px';
-                let li$ = document.createElement("li");
-                li$.className = "list-group-item row";
-                let img$ = document.createElement("img");
-                img$.src = item.snippet.thumbnails.default.url;
-                img$.className = "col-sm-4 col-md-4 col-lg-4 pull-left";
-                li$.appendChild(img$);
-                let divText$ = document.createElement("div");
-                divText$.className = "col-sm-8 col-md-8 col-lg-8";
-                let header$ = document.createElement("h6");
-                header$.textContent = item.snippet.title;
-                header$.className = "col-sm-12 col-md-12 col-lg-12";
-                header$.style.marginBottom = "5px";
-                header$.style.marginTop = "10px";
-                divText$.appendChild(header$);
-                let a$ = document.createElement("a");
-                a$.href = "www.youtube.com/watch?v=" + item.id.videoId;
-                a$.textContent = item.snippet.description
-                a$.className = "col-sm-12 col-md-12 col-lg-12";
-                a$.style.color = "green";
-                divText$.appendChild(a$);
-                li$.appendChild(divText$);
-                results.appendChild(li$);
+            .then(data => {
+                return data.json();
+            })
+            .then(result => {
+                result.items.forEach(item => {
+                    setResultsList(item);
+                });
+            });
+    }
+});
+
+function setResultsList(item) {
+    // List wrapper for video search result
+    let li$ = document.createElement("li");
+    li$.className = "list-result";
+    // video thumbnail image
+    if (item.snippet) {
+        // return `
+        //     <li>
+        //         <img src=${item.snippet.thumbnails.default.url} class='video-thumb' />
+        //         <div class='video-desc'>
+        //             <h6 style='margin-bottom: 5px;margin-top:10px;text-transform:uppercase;'>${item.snippet.title}</h6>
+        //             <a href='www.youtube.com/watch?v=${item.id.videoId}' class='video-link' style='color:'#76bd69'>${item.snippet.description}</a>
+        //         </div>
+        //     </li>
+        // `
+        results.style.minWidth = '45pc';
+        let img$ = document.createElement("img");
+        img$.src = item.snippet.thumbnails.default.url;
+        img$.className = "video-thumb";
+        // appending image to list element
+        li$.appendChild(img$);
+        //div wrapper for video header and description
+        let divText$ = document.createElement("div");
+        divText$.className = "video-desc";
+        // Header for Video search result
+        let header$ = document.createElement("h6");
+        header$.textContent = item.snippet.title;
+        header$.className = "video-header";
+        header$.style.marginBottom = "5px";
+        header$.style.marginTop = "10px";
+        header$.style.textTransform = "uppercase";
+        // appending video header to div wrapper element
+        divText$.appendChild(header$);
+        // Anchor element for video url link
+        let a$ = document.createElement("a");
+        a$.href = "www.youtube.com/watch?v=" + item.id.videoId;
+        a$.textContent = item.snippet.description
+        a$.className = "video-link";
+        a$.style.color = "#76bd69";
+        // appending archor element to div wrapper
+        divText$.appendChild(a$);
+        // appending div wrapper to list element
+        li$.appendChild(divText$);
+        // appending list element to results list element
+        results.appendChild(li$);
+    } else if (item.url) {
+        // results.style.minWidth = '55pc';
+        li$.style.margin = '2px';
+        let radio$ = document.createElement("input");
+        radio$.id = "urlcheck";
+        radio$.type = "checkbox";
+        radio$.checked = true;
+        radio$.addEventListener("click", evt => {
+            let hrefUrl = evt.srcElement.parentElement.children[1].href;
+            resultData = resultData.filter((el, indx) => {
+                return (el.url !== hrefUrl);
             });
         });
+        let divText$ = document.createElement("div");
+        divText$.className = "url-desc";
+        let img$ = document.createElement("img");
+        img$.src = item.favIconUrl;
+        img$.className = "url-thumb";
+        // appending image to list element
+        li$.appendChild(img$);
+        let a$ = document.createElement("a");
+        a$.href = item.url;
+        a$.textContent = item.url;
+        a$.className = "url-link";
+        a$.style.color = "#76bd69";
+        divText$.appendChild(radio$);
+        divText$.appendChild(a$);
+        li$.appendChild(divText$);
+        results.appendChild(li$);
+    } else {
+        li$.style.margin = '2px';
+
+        let btnCheckUrls$ = document.createElement("button");
+        btnCheckUrls$.textContent = "Check";
+        btnCheckUrls$.className = "taburls";
+        btnCheckUrls$.addEventListener("click", evt => {
+            console.log(evt);
+        });
+
+        let divText$ = document.createElement("div");
+        divText$.className = "url-desc";
+        divText$.textContent = new Date(parseInt(item));
+
+        li$.appendChild(btnCheckUrls$);
+        li$.appendChild(divText$);
+        results.appendChild(li$);
+
     }
+}
+
+save.addEventListener("click", (key) => {
+    db.ref("urls").child(new Date().getTime()).set(resultData);
+});
+
+checkurls.addEventListener("click", (evt) => {
+    results.textContent = '';
+    db.ref("urls").once("value").then( (snapshot) => {
+        let data = snapshot.val();
+        Object.keys(data).forEach(key => {
+            console.log(`Date: ${new Date(parseInt(key))} | URLS: ${data[key]}`);
+            setResultsList(key);
+        })
+    })
 });

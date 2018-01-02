@@ -1,10 +1,10 @@
 body {
     background: black;
     color: green;
-    min-width: 800px;
 }
 
 .taburls {
+    text-transform: uppercase;
     border: 1px solid green;
     background: black;
     color: green;
@@ -12,13 +12,60 @@ body {
     font-weight: bold;
     font-family: monospace;
     margin: 5px;
-    min-width: 200px;
+    /* min-width: 150px; */
 }
 
 #search {
     width: 100%;
     background: black;
     color: green;
+    height: 25px;
     margin-bottom: 10px;
     border: 1px solid;
+}
+
+.btn-container {
+    display: flex;
+    min-width: 20pc;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.list-result {
+    display: flex;
+    /* border-bottom: 1px solid darkturquoise; */
+}
+
+.video-thumb {
+
+}
+
+.video-desc {
+    max-width: 600px;
+    text-align: center;
+}
+
+.video-header {
+    font-size: inherit;
+}
+
+.video-link {
+    text-decoration: none;
+}
+
+.url-desc {
+    min-width: 600px;
+}
+.url-link {
+    text-decoration: none;
+}
+.url-thumb {
+    max-width: 20px;
+    max-height: 20px;
+    min-width: 20px;
+    min-height: 20px;
 }

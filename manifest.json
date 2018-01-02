@@ -13,5 +13,5 @@
         "https://*/"
     ],
     
-    "content_security_policy": "script-src 'self' https://www.gstatic.com/firebasejs/4.8.1/firebase.js; object-src 'self'"
+    "content_security_policy": "script-src 'self' https://www.gstatic.com; object-src 'self'"
 }
